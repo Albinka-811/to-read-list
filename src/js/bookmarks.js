@@ -1,3 +1,5 @@
+'use strict';
+
 import { LocaleStorage } from './locale-storage';
 import { Utils } from './utils';
 
@@ -61,7 +63,7 @@ export class Bookmarks {
 
     markAsReady (event) {
         const targetElement = Utils.detectEventTarget(event.path, 'bookmarks-list-item__mark-saved');
-        const key = targetElement ? targetElement.parentElement.id : null;
+        const key = targetElement ? targetElement.parentElement.parentElement.id : null;
 
         if (key) {
             const bookmark = JSON.parse(this.localeStorage.get(key));
@@ -74,7 +76,7 @@ export class Bookmarks {
 
     removeBookmark (event) {
         const targetElement = Utils.detectEventTarget(event.path, 'bookmarks-list-item__remove');
-        const key = targetElement ? targetElement.parentElement.id : null;
+        const key = targetElement ? targetElement.parentElement.parentElement.id : null;
 
         if (key) {
             this.localeStorage.delete(key);
@@ -104,6 +106,7 @@ export class Bookmarks {
     renderBookmarks (container, bookmarks, sectionTitle) {
         if (sectionTitle) {
             const title = document.createElement('h4');
+            title.classList.add('bookmarks-list-item-subtitle');
             title.innerText = sectionTitle;
 
             container.append(title);
@@ -116,11 +119,13 @@ export class Bookmarks {
             div.classList.toggle('bookmarks-list-item--ready', !!book.isReady);
 
             div.innerHTML = ` 
-                <p class="bookmarks-list-item_title">${ Utils.trim(book.title, 50) }</p>
+                <p class="bookmarks-list-item__title">${ Utils.trim(book.title, 50) }</p>
                 <p class="bookmarks-list-item__author">${ book.author_name }</p>
                 
+            <div class="bookmarks-list-item-buttons">
                 <button class="bookmarks-list-item__button bookmarks-list-item__mark-saved">Mark as read</button>
                 <button class="bookmarks-list-item__button bookmarks-list-item__remove">Remove</button>
+            </div>    
             `;
 
             container.append(div);

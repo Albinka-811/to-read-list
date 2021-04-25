@@ -1,3 +1,5 @@
+'use strict';
+
 export class BookOverview {
     container = null;
     EMPTY_DATA_PLACEHOLDER = 'NO DATA';
@@ -8,9 +10,9 @@ export class BookOverview {
 
     createDescriptionRaw (title, value) {
         return `
-            <div class="book-details-body-text">
-                ${ title }
-                <p class="book-details-body-text__value">${ value ?? this.EMPTY_DATA_PLACEHOLDER }</p>
+            <div class="book-details-body-row">
+                <span class="book-details-body-row__title">${ title }</span> 
+                <span class="book-details-body-row__value">${ value ?? this.EMPTY_DATA_PLACEHOLDER }</span>
             </div>
         `;
     }
@@ -22,8 +24,7 @@ export class BookOverview {
            <h3 class="book-details-author">${ bookInfo.author_name?.join(' ') ?? this.EMPTY_DATA_PLACEHOLDER }</h3>
             
             <div class="book-details-body">
-                <div class="book-details-body-text">Languages available: ${ bookInfo.language?.join(', ') ?? this.EMPTY_DATA_PLACEHOLDER }</div>
-                
+                ${ this.createDescriptionRaw('Languages available:', bookInfo.language?.join(', ')) }
                 ${ this.createDescriptionRaw('First publish year:', bookInfo.publish_year?.[0]) }
                 ${ this.createDescriptionRaw('Years published:', bookInfo.publish_year?.join(', ')) }
                 ${ this.createDescriptionRaw('Full text available:', bookInfo.text) }

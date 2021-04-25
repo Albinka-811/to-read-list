@@ -1,3 +1,5 @@
+'use strict';
+
 export class Utils {
     static trim (text, length) {
         if (!text) {
