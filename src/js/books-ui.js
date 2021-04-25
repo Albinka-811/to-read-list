@@ -18,6 +18,7 @@ export class BooksUI {
         searchResult: null,
         searchFooter: null,
         bookmarksList: null,
+        bookmarksListMeta: null,
         searchTypeSelector: null,
         addToBookmarkButton: null,
     };
@@ -52,6 +53,7 @@ export class BooksUI {
         this.elements.searchResult = document.getElementById('searchResult');
         this.elements.searchFooter = document.getElementById('search-footer');
         this.elements.bookmarksList = document.getElementById('bookmarksList');
+        this.elements.bookmarksListMeta = document.getElementById('bookmarksListMeta');
         this.elements.searchTypeSelector = document.getElementById('searchTypeSelect');
         this.elements.addToBookmarkButton = document.getElementById('addToBookmarkButton');
 
@@ -224,7 +226,6 @@ export class BooksUI {
         `;
     }
 
-
     updateAddBookmarkButtonState () {
         if (this.selectedBook.data) {
             this.elements.addToBookmarkButton.removeAttribute('hidden');
@@ -238,6 +239,14 @@ export class BooksUI {
             this.elements.addToBookmarkButton.removeAttribute('disabled');
         }
     }
+
+    updateBookmarksMeta (allCount, readyCount) {
+        this.elements.bookmarksListMeta.innerHTML = `
+            <span class="bookmarks-header-info__count">${allCount} books</span>
+            <span class="bookmarks-header-info__read">${readyCount} read</span>
+        `;
+    }
+
     saveToBookmarks () {
         this.localeStorage.set(this.selectedBook.data.key, this.selectedBook.data);
         this.updateAddBookmarkButtonState();
@@ -253,18 +262,17 @@ export class BooksUI {
             bookmark.isReady = true;
 
             this.localeStorage.set(key, bookmark);
-
             this.showBookmarks();
         }
     }
 
     removeBookmark (event) {
         const targetElement = Utils.detectEventTarget(event.path, 'bookmarks-list-item__remove');
-        const key = targetElement ? targetElement.id : null;
+        const key = targetElement ? targetElement.parentElement.id : null;
 
         if (key) {
             this.localeStorage.delete(key);
-            targetElement.parentElement.remove();
+            this.showBookmarks();
         }
     }
 
@@ -276,6 +284,7 @@ export class BooksUI {
         const isInProgressBooks = [];
 
         bookmarks.forEach((book) => book.isReady ? isReadyBooks.push(book) : isInProgressBooks.push(book));
+        this.updateBookmarksMeta(bookmarks.length, isReadyBooks.length);
 
         if (isInProgressBooks.length) {
             this.renderBookmarks(this.elements.bookmarksList, isInProgressBooks);

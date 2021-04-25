@@ -5,7 +5,8 @@
     flex-flow: column;
     align-items: stretch;
     justify-content: space-between;
-    flex: 0 1 394px;
+    width: 30vw;
+    max-width: 384px;
     height: 100vh;
 
     &-result {
