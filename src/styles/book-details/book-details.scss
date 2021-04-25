@@ -11,28 +11,42 @@
         right: 0;
         border: none;
         font-size: 24px;
+        background-color: #a2d240;
+        color: $white;
         cursor: pointer;
 
-        &:hover {
+        &:disabled {
+            display: none;
+            cursor: not-allowed;
+        }
+
+        &:not(:disabled):hover {
             color: $white;
         }
     }
 
     &-title {
-        //margin: 30px 30px 10px;
+        font-size: 34px;
+        font-weight: 500;
     }
 
     &-author {
-        //margin: 0 30px;
+        font-size: 26px;
+        font-weight: 500;
     }
 
     &-body {
         margin-top: 36px;
 
-        &-text {
+        &-row {
             margin-bottom: 10px;
             word-wrap: break-word;
             max-width: 100%;
+
+            &__title {
+                font-size: 18px;
+                font-weight: 600;
+            }
         }
     }
 }

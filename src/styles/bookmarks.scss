@@ -6,7 +6,6 @@
     width: 30vw;
     max-width: 384px;
     height: 100vh;
-    background: $gray;
 
     &-header {
         flex: 0 0 auto;
@@ -25,15 +24,59 @@
         max-height: calc(100% - 100px);
         overflow-y: auto;
         overflow-x: hidden;
-        border-left: 1px solid #207b25;
+        border-left: 1px solid $green;
 
         &-item {
-            &--ready &__button {
+            border-bottom: 1px solid $green;
+            padding: 20px 0 0;
+
+            &__title {
+                font-size: 18px;
+                padding: 0 15px 10px;
+            }
+
+            &__author {
+                font-size: 16px;
+                padding: 0 15px 10px;
+            }
+
+            &-buttons {
+                display: flex;
+                align-items: stretch;
+                justify-content: space-between;
+                height: 30px;
+            }
+            &__button {
+                display: block;
+                border: none;
+                flex: 1 0 50%;
+            }
+
+            &__mark-saved {
+                font-size: 14px;
+                background: $green;
+                color: $white;
+            }
+
+            &__remove {
+                font-size: 14px;
+                background: red;
+                color: $white;
+            }
+
+            &-subtitle {
+                font-size: 18px;
+                font-weight: 100;
+                text-align: center;
+                padding: 10px 0;
+            }
+
+            &--ready &-buttons {
                 display: none;
             }
 
             &--ready {
-                background-color: green;
+                background-color: #a2d240;
             }
         }
     }

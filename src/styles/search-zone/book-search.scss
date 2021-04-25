@@ -14,7 +14,7 @@
         max-height: calc(100% - 182px);
         overflow-y: auto;
         overflow-x: hidden;
-        border-right: 1px solid #207b25;
+        border-right: 1px solid $green;
     }
 
     &-footer {
@@ -35,18 +35,19 @@
 }
 
 .book-short-info {
-    border-bottom: 1px solid #207b25;
-    padding: 20px 30px;
+    border-bottom: 1px solid $green;
+    padding: 20px 25px;
     cursor: pointer;
     height: 125px;
     overflow: auto;
+    transition: background 0.3s;
 
     &:hover {
-        background: $gray;
+        background: #d4e690;
     }
 
     &--selected {
-        background: azure;
+        background: #a2d240;
     }
 
     &__title {
