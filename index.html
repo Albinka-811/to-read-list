@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="src/styles/main.scss">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Control Task</title>
+</head>
+<body>
+<div class="container">
+
+    <div id="bookSearch" class="book-search">
+        <form class="search-form">
+            <label class="search-form-label">
+                <span class="search-form-label__text">Target</span>
+                <select class="search-form-label__input" id="searchTypeSelect">
+                    <option value="q">Everywhere</option>
+                    <option value="author">Author</option>
+                    <option value="title">Title</option>
+                </select>
+            </label>
+
+            <label class="search-form-label">
+                <span class="search-form-label__text">Phase</span>
+                <input
+                        type="search"
+                        id="searchInput"
+                        class="search-form-label__input"
+                        placeholder="Search"
+                >
+            </label>
+        </form>
+
+        <div id="searchResult" class="book-search-result"></div>
+
+        <div class="book-search-footer" id="search-footer"></div>
+    </div>
+
+    <div class="book-details">
+        <button id="addToBookmarkButton" class="book-details__button">Add to bookmarks</button>
+        <div id="bookInfo"></div>
+    </div>
+    <div class="bookmarks">
+        <div class="bookmarks-header">
+            <span class="bookmarks-header__title">
+                To read list...
+            </span>
+            <div class="bookmarks-header-info">
+                <span class="bookmarks-header-info__count">3 books</span>
+                <span class="bookmarks-header-info__read">1 read</span>
+            </div>
+        </div>
+
+        <div id="bookmarksList"></div>
+    </div>
+</div>
+
+<script src="src/js/index.js"></script>
+</body>
+</html>
+
