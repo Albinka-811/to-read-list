@@ -33,8 +33,15 @@ export class BooksUI {
         timer: null,
     }
 
+    proxies = {
+        bookOverview: null,
+    }
+
     booksCollection = [];
-    selectedBook = null;
+    selectedBook = {
+        data: null,
+        element: null,
+    };
 
     constructor (api, localeStorage) {
         this.api = api;
@@ -59,10 +66,9 @@ export class BooksUI {
         this.elements.searchTypeSelector.addEventListener('change', this.changeSearchTarget.bind(this));
 
         this.elements.bookmarksList.addEventListener('click', this.removeBookmark.bind(this));
+        this.elements.bookmarksList.addEventListener('click', this.markAsReady.bind(this));
         this.elements.addToBookmarkButton.addEventListener('click', this.saveToBookmarks.bind(this))
     }
-
-
 
     changeSearchTarget ({ target }) {
         this.api.clearQueries();
@@ -87,10 +93,10 @@ export class BooksUI {
                 return;
             }
 
+            this.clearSearchResult();
             const { docs, start } = await this.makeRequest(this.searchMeta.currentPage);
-            console.log(docs);
-
             this.booksCollection = docs;
+
             this.renderSearchResult(this.elements.searchResult, docs);
             this.renderSearchMeta(this.elements.searchFooter, {
                 start,
@@ -136,6 +142,11 @@ export class BooksUI {
 
     }
 
+    clearSearchResult () {
+        this.booksCollection = [];
+        this.elements.searchResult.innerHTML = '';
+    };
+
     renderSearchResult (container, docsArray) {
         for (let book of docsArray) {
             const div = document.createElement('div');
@@ -175,21 +186,22 @@ export class BooksUI {
             return;
         }
 
-        // if (this.selectedBook) {
-        //     const selectedBook = this.elements.searchResult.querySelector('#' + this.selectedBook.id);
-        //     selectedBook.classList.remove('select-book');
-        // }
+        this.selectedBook.element?.classList.remove('book-short-info--selected');
 
-        this.selectedBook = selectedBook;
-        event.target.classList.add('select-book');
-        this.renderBookInfo(this.elements.bookInfo, this.selectedBook);
+        this.selectedBook.element = targetElement;
+        this.selectedBook.data = selectedBook;
+
+        this.selectedBook.element.classList.add('book-short-info--selected');
+
+        this.updateAddBookmarkButtonState();
+        this.renderBookInfo(this.elements.bookInfo, this.selectedBook.data);
     }
 
     renderBookInfo (container, bookInfo) {
+        const PLACEHOLDER = 'NO DATA';
         container.innerHTML = `
                <h2 class="book-details-title">${ bookInfo.title }</h2>
-               <h3 class="book-details-author">${ bookInfo.author_name ?
-            bookInfo.author_name.join(' ') : ' - ' }</h3>
+               <h3 class="book-details-author">${ bookInfo.author_name?.join(' ') ?? PLACEHOLDER }</h3>
             
             <div class="book-details-body">
                 <div class="book-details-body-text">Languages available: ${
@@ -198,11 +210,11 @@ export class BooksUI {
                 </div>
                 <div class="book-details-body-text">
                     First publish year: 
-                    <p class="book-details-body-text__value">${ bookInfo.publish_year[0] }</p>
+                    <p class="book-details-body-text__value">${ bookInfo.publish_year?.[0] ?? PLACEHOLDER }</p>
                 </div>
                 <div class="book-details-body-text">
                     Years published: 
-                    <p class="book-details-body-text__value">${ bookInfo.publish_year.join(', ') }</p>
+                    <p class="book-details-body-text__value">${ bookInfo.publish_year?.join(', ') }</p>
                 </div>
                 <div class="book-details-body-text">
                     Full text available: 
@@ -212,11 +224,37 @@ export class BooksUI {
         `;
     }
 
-    saveToBookmarks () {
-        if (!this.localeStorage.hasKey(this.selectedBook.key)) {
-            this.localeStorage.set(this.selectedBook.key, this.selectedBook);
+
+    updateAddBookmarkButtonState () {
+        if (this.selectedBook.data) {
+            this.elements.addToBookmarkButton.removeAttribute('hidden');
         } else {
-            alert('This book is already saved');
+            this.elements.addToBookmarkButton.setAttribute('hidden', true);
+        }
+
+        if (this.localeStorage.hasKey(this.selectedBook.data?.key)) {
+            this.elements.addToBookmarkButton.setAttribute('disabled', true);
+        } else {
+            this.elements.addToBookmarkButton.removeAttribute('disabled');
+        }
+    }
+    saveToBookmarks () {
+        this.localeStorage.set(this.selectedBook.data.key, this.selectedBook.data);
+        this.updateAddBookmarkButtonState();
+        this.showBookmarks();
+    }
+
+    markAsReady (event) {
+        const targetElement = Utils.detectEventTarget(event.path, 'bookmarks-list-item__mark-saved');
+        const key = targetElement ? targetElement.parentElement.id : null;
+
+        if (key) {
+            const bookmark = JSON.parse(this.localeStorage.get(key));
+            bookmark.isReady = true;
+
+            this.localeStorage.set(key, bookmark);
+
+            this.showBookmarks();
         }
     }
 
@@ -225,28 +263,52 @@ export class BooksUI {
         const key = targetElement ? targetElement.id : null;
 
         if (key) {
-            console.log(key)
             this.localeStorage.delete(key);
             targetElement.parentElement.remove();
         }
     }
 
     showBookmarks () {
+        this.elements.bookmarksList.innerHTML = '';
+
         const bookmarks = this.localeStorage.getAll();
-        this.renderBookmarks(this.elements.bookmarksList, bookmarks);
-    }
+        const isReadyBooks = [];
+        const isInProgressBooks = [];
 
-    renderBookmarks (container, bookmarks) {
-        const bookmarksList = [];
+        bookmarks.forEach((book) => book.isReady ? isReadyBooks.push(book) : isInProgressBooks.push(book));
 
-        for (let book of bookmarks) {
-            bookmarksList.push(`<div class="bookmarks-list-item">
-                <p class="bookmarks-list-item_title">${ Utils.trim(book.title, 50) }</p>
-                <p class="bookmarks-list-item__author">${ book.author_name }</p>
-                <button id="${ book.key }" class="bookmarks-list-item__remove">Remove</button>
-            </div>`);
+        if (isInProgressBooks.length) {
+            this.renderBookmarks(this.elements.bookmarksList, isInProgressBooks);
         }
 
-        container.innerHTML = bookmarksList.join('');
+        if (isReadyBooks.length) {
+            this.renderBookmarks(this.elements.bookmarksList, isReadyBooks, 'Finished books');
+        }
+    }
+
+    renderBookmarks (container, bookmarks, sectionTitle) {
+        if (sectionTitle) {
+            const title = document.createElement('h4');
+            title.innerText = sectionTitle;
+
+            container.append(title);
+        }
+
+        for (let book of bookmarks) {
+            const div = document.createElement('div');
+            div.setAttribute('id', book.key);
+            div.classList.add('bookmarks-list-item');
+            div.classList.toggle('bookmarks-list-item--ready', !!book.isReady);
+
+            div.innerHTML = ` 
+                <p class="bookmarks-list-item_title">${ Utils.trim(book.title, 50) }</p>
+                <p class="bookmarks-list-item__author">${ book.author_name }</p>
+                
+                <button class="bookmarks-list-item__button bookmarks-list-item__mark-saved">Mark as read</button>
+                <button class="bookmarks-list-item__button bookmarks-list-item__remove">Remove</button>
+            `;
+
+            container.append(div);
+        }
     }
 }

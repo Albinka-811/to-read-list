@@ -13,4 +13,16 @@
             font-size: 36px;
         }
     }
+
+    &-list {
+        &-item {
+            &--ready &__button {
+                display: none;
+            }
+
+            &--ready {
+                background-color: green;
+            }
+        }
+    }
 }

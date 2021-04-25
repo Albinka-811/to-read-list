@@ -1,5 +1,9 @@
 export class Utils {
     static trim (text, length) {
+        if (!text) {
+            return '';
+        }
+
         const trimmed = text.slice(0, length);
 
         return trimmed.length === text.length ? trimmed : trimmed + '...'

@@ -44,6 +44,10 @@
         background: $gray;
     }
 
+    &--selected {
+        background: azure;
+    }
+
     &__title {
         font-size: 18px;
         padding-bottom: 10px;
