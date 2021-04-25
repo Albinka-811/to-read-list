@@ -1,0 +1,16 @@
+.bookmarks {
+    height: 100vh;
+    flex: 0 0 384px;
+    background: $gray;
+
+    &-header {
+        min-height: 100px;
+        padding: 15px;
+        background: $green;
+        color: $white;
+
+        &__title {
+            font-size: 36px;
+        }
+    }
+}

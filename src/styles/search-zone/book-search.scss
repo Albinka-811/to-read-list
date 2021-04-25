@@ -1,0 +1,57 @@
+@import "./search-form";
+
+.book-search {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    justify-content: space-between;
+    flex: 0 1 394px;
+    height: 100vh;
+
+    &-result {
+        flex: 1 0 auto;
+        max-height: calc(100% - 182px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-right: 1px solid #207b25;
+    }
+
+    &-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 60px;
+        flex: 0 0 auto;
+        padding: 12px 24px;
+        background: $green;
+
+        &-founded,
+        &-start,
+        &-size {
+            color: $white;
+        }
+    }
+}
+
+.book-short-info {
+    border-bottom: 1px solid #207b25;
+    padding: 20px 30px;
+    cursor: pointer;
+    height: 125px;
+    overflow: auto;
+
+    &:hover {
+        background: $gray;
+    }
+
+    &__title {
+        font-size: 18px;
+        padding-bottom: 10px;
+        text-overflow: ellipsis;
+    }
+
+    &__author {
+        font-size: 16px;
+        text-overflow: ellipsis;
+    }
+}

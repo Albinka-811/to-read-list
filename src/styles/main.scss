@@ -1,0 +1,17 @@
+@import "./vars";
+
+@import "book-details/book-details";
+@import "search-zone/book-search";
+@import "./bookmarks";
+
+* {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+.container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    //background: #eaf1fa;
+}

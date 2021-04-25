@@ -1,0 +1,38 @@
+.book-details {
+    flex: 1 1 100%;
+    padding: 24px;
+    overflow: auto;
+    max-height: 100vh;
+    position: relative;
+
+    &__button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+
+        &:hover {
+            color: $white;
+        }
+    }
+
+    &-title {
+        //margin: 30px 30px 10px;
+    }
+
+    &-author {
+        //margin: 0 30px;
+    }
+
+    &-body {
+        margin-top: 36px;
+
+        &-text {
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+    }
+}
